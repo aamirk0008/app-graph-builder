@@ -1,0 +1,137 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: hsl(224, 71%, 4%);
+  --color-foreground: hsl(213, 31%, 91%);
+
+  --color-card: hsl(224, 71%, 6%);
+  --color-card-foreground: hsl(213, 31%, 91%);
+
+  --color-primary: hsl(263, 70%, 50%);
+  --color-primary-foreground: hsl(0, 0%, 100%);
+
+  --color-secondary: hsl(222, 47%, 11%);
+  --color-secondary-foreground: hsl(215, 20%, 65%);
+
+  --color-muted: hsl(223, 47%, 11%);
+  --color-muted-foreground: hsl(215, 20%, 55%);
+
+  --color-accent: hsl(216, 34%, 17%);
+  --color-accent-foreground: hsl(213, 31%, 91%);
+
+  --color-destructive: hsl(0, 63%, 31%);
+  --color-destructive-foreground: hsl(210, 40%, 98%);
+
+  --color-border: hsl(216, 34%, 17%);
+  --color-input: hsl(216, 34%, 17%);
+  --color-ring: hsl(263, 70%, 50%);
+
+  --radius: 0.5rem;
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+
+  --font-sans: ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, monospace;
+}
+
+*,
+*::before,
+*::after {
+  border-color: var(--color-border);
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-sans);
+  margin: 0;
+  padding: 0;
+}
+
+/* Range input styling */
+input[type='range'] {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 9999px;
+  background: var(--color-secondary);
+  outline: none;
+  cursor: pointer;
+}
+
+input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #a855f7;
+  cursor: pointer;
+  border: 2px solid #1a1a2e;
+}
+
+input[type='range']::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #a855f7;
+  cursor: pointer;
+  border: 2px solid #1a1a2e;
+}
+
+/* ReactFlow overrides */
+.react-flow__renderer {
+  border-radius: var(--radius);
+}
+
+.react-flow__edge-path {
+  stroke: rgba(168, 85, 247, 0.5);
+  stroke-width: 2;
+}
+
+.react-flow__edge.animated .react-flow__edge-path {
+  stroke: rgba(168, 85, 247, 0.8);
+}
+
+.react-flow__handle {
+  width: 8px !important;
+  height: 8px !important;
+  background: #a855f7 !important;
+  border: none !important;
+}
+
+.react-flow__controls {
+  background: var(--color-card) !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: var(--radius) !important;
+}
+
+.react-flow__controls-button {
+  background: var(--color-card) !important;
+  border-bottom: 1px solid var(--color-border) !important;
+  color: var(--color-foreground) !important;
+  fill: var(--color-foreground) !important;
+}
+
+.react-flow__controls-button:hover {
+  background: var(--color-accent) !important;
+}
+
+.react-flow__minimap {
+  background: var(--color-card) !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: var(--radius) !important;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 2px;
+}
