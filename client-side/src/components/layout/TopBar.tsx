@@ -1,24 +1,47 @@
-import { Maximize2, Plus, Menu, GitBranch } from 'lucide-react'
+import { Maximize2, Plus, Menu, GitBranch, ChevronDown } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useAppStore } from '@/store/appStore'
+import { useApps } from '@/hooks/useApps'
 
 export function TopBar() {
-  const { toggleMobilePanel } = useAppStore()
+  const { toggleMobilePanel, selectedAppId } = useAppStore()
+  const { data: apps } = useApps()
+
+  const selectedApp = apps?.find((a) => a.id === selectedAppId)
 
   return (
     <header className="flex items-center justify-between px-4 h-12 shrink-0 z-10 border-b border-[--color-border] bg-[#0f0f1e]">
 
-      {/* Brand */}
-      <div className="flex items-center gap-2">
-        <div className="w-7 h-7 rounded-md bg-purple-600 flex items-center justify-center">
-          <GitBranch size={14} className="text-white" />
+      {/* Left — brand + selected app */}
+      <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
+          <div className="w-7 h-7 rounded-md bg-purple-600 flex items-center justify-center shrink-0">
+            <GitBranch size={14} className="text-white" />
+          </div>
+          <span className="font-semibold text-sm text-white hidden sm:block">
+            App Graph Builder
+          </span>
         </div>
-        <span className="font-semibold text-sm text-white hidden sm:block">
-          App Graph Builder
-        </span>
+
+        {/* Selected app pill */}
+        {selectedApp && (
+          <>
+            <span className="text-[--color-muted-foreground] text-sm hidden sm:block">/</span>
+            <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[--color-accent] border border-[--color-border]">
+              <div
+                className="w-3.5 h-3.5 rounded-sm"
+                style={{ backgroundColor: selectedApp.color }}
+              />
+              <span className="text-xs font-medium text-[--color-foreground] max-w-[140px] truncate">
+                {selectedApp.name}
+              </span>
+              <ChevronDown size={11} className="text-[--color-muted-foreground]" />
+            </div>
+          </>
+        )}
       </div>
 
-      {/* Actions */}
+      {/* Right — actions */}
       <div className="flex items-center gap-1">
         <Button variant="ghost" size="sm" title="Fit view">
           <Maximize2 size={15} />
