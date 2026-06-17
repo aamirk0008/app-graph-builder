@@ -7,7 +7,7 @@ import type { NodeStatus } from '@/types'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-interface ServiceNodeData extends Record<string, unknown> {
+export interface ServiceNodeData {
   label: string
   type: 'service' | 'database'
   status: NodeStatus
@@ -56,7 +56,9 @@ const RESOURCE_TABS = [
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
-function ServiceNodeComponent({ data, selected }: NodeProps<ServiceNodeData>) {
+function ServiceNodeComponent(props: NodeProps) {
+  const data = props.data as unknown as ServiceNodeData
+  const selected = props.selected ?? false
   const pct = data.resourceValue ?? 0
   const barColor = pct > 70 ? '#ef4444' : pct > 40 ? '#f59e0b' : '#3b82f6'
 

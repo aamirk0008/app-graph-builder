@@ -18,7 +18,6 @@ import { useAppStore } from '@/store/appStore'
 import { useGraph } from '@/hooks/useGraph'
 import { Loader2, AlertCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import type { ServiceNodeData } from '@/types'
 
 const nodeTypes = { serviceNode: ServiceNode }
 
@@ -27,13 +26,13 @@ function CanvasInner() {
   const { data, isLoading, isError, refetch } = useGraph(selectedAppId)
   const { fitView } = useReactFlow()
 
-  const [nodes, setNodes, onNodesChange] = useNodesState<Node<ServiceNodeData>>([])
-  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([])
+const [nodes, setNodes, onNodesChange] = useNodesState<Node>([])
+const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([])
 
   // When graph data arrives, load into ReactFlow and fit view
   useEffect(() => {
     if (data) {
-      setNodes(data.nodes as Node<ServiceNodeData>[])
+      setNodes(data.nodes as Node[])
       setEdges(data.edges as Edge[])
       // Small delay so ReactFlow has time to render before fitting
       setTimeout(() => {
