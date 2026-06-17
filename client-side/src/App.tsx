@@ -3,29 +3,12 @@ import { ReactFlowProvider } from '@xyflow/react'
 import { TopBar } from '@/components/layout/TopBar'
 import { LeftRail } from '@/components/layout/LeftRail'
 import { RightPanel } from '@/components/layout/RightPanel'
+import { FlowCanvas } from '@/components/canvas/FlowCanvas'
 import { useAppStore } from '@/store/appStore'
-
-// Canvas placeholder — replaced in v0.4
-function CanvasPlaceholder() {
-  return (
-    <div
-      className="w-full h-full flex items-center justify-center"
-      style={{
-        backgroundImage: 'radial-gradient(circle, #2a2a4a 1px, transparent 1px)',
-        backgroundSize: '20px 20px',
-      }}
-    >
-      <p className="text-[--color-muted-foreground] text-sm">
-        Canvas coming in v0.4
-      </p>
-    </div>
-  )
-}
 
 export default function App() {
   const { isMobilePanelOpen, setMobilePanelOpen } = useAppStore()
 
-  // Close drawer on Escape
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.key === 'Escape') setMobilePanelOpen(false)
@@ -42,17 +25,17 @@ export default function App() {
         <div className="flex flex-1 overflow-hidden">
           <LeftRail />
 
-          {/* Center canvas */}
+          {/* Canvas */}
           <main className="flex-1 relative overflow-hidden">
-            <CanvasPlaceholder />
+            <FlowCanvas />
           </main>
 
-          {/* Right panel — sidebar on desktop */}
+          {/* Desktop right panel */}
           <aside className="hidden lg:flex w-72 flex-col border-l border-[--color-border] bg-[#0f0f1e]">
             <RightPanel />
           </aside>
 
-          {/* Mobile overlay backdrop */}
+          {/* Mobile backdrop */}
           {isMobilePanelOpen && (
             <div
               className="fixed inset-0 z-40 bg-black/60 lg:hidden"

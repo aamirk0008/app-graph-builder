@@ -2,7 +2,7 @@ export type NodeStatus = 'Healthy' | 'Degraded' | 'Down'
 
 export type NodeType = 'service' | 'database'
 
-export interface ServiceNodeData {
+export interface ServiceNodeData extends Record<string, unknown> {
   label: string
   type: NodeType
   status: NodeStatus
