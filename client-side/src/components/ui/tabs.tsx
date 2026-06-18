@@ -29,7 +29,7 @@ function TabsTrigger({
         'inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1.5 text-sm font-medium',
         'transition-all focus-visible:outline-none',
         'disabled:pointer-events-none disabled:opacity-50',
-        'data-[state=active]:bg-[--color-background] data-[state=active]:text-[--color-foreground] data-[state=active]:shadow-sm',
+        'data-[state=active]:bg-black data-[state=active]:text-[--color-foreground] data-[state=active]:shadow-sm',
         className
       )}
       {...props}
