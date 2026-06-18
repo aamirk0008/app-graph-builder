@@ -5,7 +5,7 @@ import { useApps } from '@/hooks/useApps'
 import { useReactFlow } from '@xyflow/react'
 
 export function TopBar() {
-  const { toggleMobilePanel, selectedAppId } = useAppStore()
+  const { toggleMobilePanel, selectedAppId, addNode } = useAppStore()
   const { data: apps } = useApps()
   const { fitView } = useReactFlow()
 
@@ -27,7 +27,9 @@ export function TopBar() {
 
         {selectedApp && (
           <>
-            <span className="text-[--color-muted-foreground] text-sm hidden sm:block">/</span>
+            <span className="text-[--color-muted-foreground] text-sm hidden sm:block">
+              /
+            </span>
             <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[--color-accent] border border-[--color-border]">
               <div
                 className="w-3.5 h-3.5 rounded-sm shrink-0"
@@ -54,7 +56,12 @@ export function TopBar() {
           <span className="hidden sm:inline">Fit</span>
         </Button>
 
-        <Button variant="ghost" size="sm" title="Add node">
+        <Button
+          variant="ghost"
+          size="sm"
+          title="Add new node"
+          onClick={() => addNode?.()}
+        >
           <Plus size={15} />
           <span className="hidden sm:inline">Add Node</span>
         </Button>
@@ -64,7 +71,7 @@ export function TopBar() {
           size="icon"
           className="lg:hidden"
           onClick={toggleMobilePanel}
-          title="Toggle panel"
+          title="Toggle panel (P)"
         >
           <Menu size={16} />
         </Button>

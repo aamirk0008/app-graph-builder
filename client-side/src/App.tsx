@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useCallback } from 'react'
 import { ReactFlowProvider } from '@xyflow/react'
 import { TopBar } from '@/components/layout/TopBar'
 import { LeftRail } from '@/components/layout/LeftRail'
@@ -7,8 +7,31 @@ import { FlowCanvas } from '@/components/canvas/FlowCanvas'
 import { useAppStore } from '@/store/appStore'
 
 export default function App() {
-  const { isMobilePanelOpen, setMobilePanelOpen } = useAppStore()
+  const {
+    isMobilePanelOpen,
+    setMobilePanelOpen,
+    toggleMobilePanel,
+    setSelectedNodeId,
+  } = useAppStore()
 
+  const handleKeyDown = useCallback(
+    (e: KeyboardEvent) => {
+      const tag = (e.target as HTMLElement).tagName.toLowerCase()
+      // Don't fire shortcuts when typing in inputs
+      if (['input', 'textarea', 'select'].includes(tag)) return
+
+      if (e.key === 'Escape') setSelectedNodeId(null)
+      if (e.key === 'p' || e.key === 'P') toggleMobilePanel()
+    },
+    [setSelectedNodeId, toggleMobilePanel]
+  )
+
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [handleKeyDown])
+
+  // Close drawer on Escape separately
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.key === 'Escape') setMobilePanelOpen(false)
@@ -25,7 +48,6 @@ export default function App() {
         <div className="flex flex-1 overflow-hidden">
           <LeftRail />
 
-          {/* Canvas */}
           <main className="flex-1 relative overflow-hidden">
             <FlowCanvas />
           </main>
