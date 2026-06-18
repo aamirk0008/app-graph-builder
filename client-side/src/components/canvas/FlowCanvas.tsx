@@ -24,20 +24,17 @@ const nodeTypes = { serviceNode: ServiceNode }
 function CanvasInner() {
   const { selectedAppId, setSelectedNodeId } = useAppStore()
   const { data, isLoading, isError, refetch } = useGraph(selectedAppId)
-  const { fitView } = useReactFlow()
+  const { fitView, screenToFlowPosition } = useReactFlow()
 
-const [nodes, setNodes, onNodesChange] = useNodesState<Node>([])
-const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([])
+  const [nodes, setNodes, onNodesChange] = useNodesState<Node>([])
+  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([])
 
-  // When graph data arrives, load into ReactFlow and fit view
+  // Load graph data when it arrives
   useEffect(() => {
     if (data) {
       setNodes(data.nodes as Node[])
       setEdges(data.edges as Edge[])
-      // Small delay so ReactFlow has time to render before fitting
-      setTimeout(() => {
-        fitView({ padding: 0.2, duration: 400 })
-      }, 50)
+      setTimeout(() => fitView({ padding: 0.2, duration: 400 }), 50)
     }
   }, [data, setNodes, setEdges, fitView])
 
@@ -45,6 +42,19 @@ const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([])
   useEffect(() => {
     setSelectedNodeId(null)
   }, [selectedAppId, setSelectedNodeId])
+
+  // F key → fit view
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      const tag = (e.target as HTMLElement).tagName.toLowerCase()
+      if (['input', 'textarea', 'select'].includes(tag)) return
+      if (e.key === 'f' || e.key === 'F') {
+        fitView({ padding: 0.2, duration: 400 })
+      }
+    }
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
+  }, [fitView])
 
   const onConnect = useCallback<OnConnect>(
     (connection) => setEdges((eds) => addEdge(connection, eds)),
@@ -73,7 +83,35 @@ const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([])
     [setSelectedNodeId]
   )
 
-  // Loading state
+  // Add Node — creates a new service node at canvas center
+  const addNode = useCallback(() => {
+    const id = `node-${Date.now()}`
+    const position = screenToFlowPosition({
+      x: window.innerWidth / 2,
+      y: window.innerHeight / 2,
+    })
+    const newNode: Node = {
+      id,
+      type: 'serviceNode',
+      position,
+      data: {
+        label: 'New Service',
+        type: 'service',
+        status: 'Healthy',
+        cost: '$0.01/HR',
+        resourceValue: 0,
+        provider: 'aws',
+      },
+    }
+    setNodes((nds) => [...nds, newNode])
+    setSelectedNodeId(id)
+  }, [screenToFlowPosition, setNodes, setSelectedNodeId])
+
+  // Expose addNode to TopBar via store
+  useEffect(() => {
+    useAppStore.setState({ addNode })
+  }, [addNode])
+
   if (isLoading) {
     return (
       <div
@@ -89,7 +127,6 @@ const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([])
     )
   }
 
-  // Error state
   if (isError) {
     return (
       <div
@@ -130,10 +167,7 @@ const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([])
         size={1}
         color="#2a2a4a"
       />
-      <Controls
-        className="!bottom-4 !left-4"
-        showInteractive={false}
-      />
+      <Controls showInteractive={false} />
     </ReactFlow>
   )
 }

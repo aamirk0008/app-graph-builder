@@ -5,6 +5,7 @@ interface AppStore {
   selectedNodeId: string | null
   isMobilePanelOpen: boolean
   activeInspectorTab: string
+  addNode: (() => void) | null
 
   setSelectedAppId: (id: string) => void
   setSelectedNodeId: (id: string | null) => void
@@ -18,6 +19,7 @@ export const useAppStore = create<AppStore>((set) => ({
   selectedNodeId: null,
   isMobilePanelOpen: false,
   activeInspectorTab: 'config',
+  addNode: null,
 
   setSelectedAppId: (id) => set({ selectedAppId: id, selectedNodeId: null }),
   setSelectedNodeId: (id) => set({ selectedNodeId: id }),
