@@ -5,6 +5,13 @@ A responsive, ReactFlow-powered dashboard for visualizing and editing service de
 **Live demo:** [app-graph-builder-rust.vercel.app](https://app-graph-builder-rust.vercel.app/)
 **Repository:** [github.com/aamirk0008/app-graph-builder](https://github.com/aamirk0008/app-graph-builder)
 
+<!--
+  TODO: drop in 1–2 screenshots or a short GIF here, e.g.:
+  ![App Graph Builder — canvas and inspector](./docs/screenshot-main.png)
+  Capture the canvas with a node selected and the Inspector's Runtime tab open,
+  since that single view demonstrates the graph, the status pill, and the synced slider at once.
+-->
+
 ---
 
 ## Overview
@@ -21,6 +28,18 @@ App Graph Builder was built as a take-home assessment focused on layout composit
 - **Keyboard shortcuts** — `F` to fit the view, `Escape` to deselect, `P` to toggle the mobile panel
 - **Add Node** button to create new service nodes directly on the canvas
 - Strict TypeScript throughout, with clean `lint` and `typecheck` runs as a release gate
+
+## Requirements Checklist
+
+Mapped against the assessment's functional requirements:
+
+- [x] Layout: top bar, left rail, right panel, dotted canvas
+- [x] Responsive: right panel becomes a mobile drawer
+- [x] ReactFlow: 3+ nodes, drag, select, delete, zoom/pan, fit view
+- [x] Node inspector: tabs, status pill, synced slider + numeric input, persisted edits
+- [x] TanStack Query: mock `/apps` and `/apps/:appId/graph`, with loading/error states
+- [x] Zustand: selected app/node, mobile panel open, active inspector tab
+- [x] TypeScript strict mode, ESLint, and required scripts (`dev`, `build`, `preview`, `lint`, `typecheck`)
 
 ## Tech Stack
 
@@ -59,6 +78,44 @@ A few decisions worth calling out, since they shaped how the codebase is structu
 
 Each tag is a working, deployable state of the app.
 
+## Project Structure
+
+```
+src/
+├─ App.tsx, main.tsx, index.css
+├─ assets/                  static images
+├─ components/
+│  ├─ canvas/                FlowCanvas, ServiceNode — the ReactFlow surface
+│  ├─ inspector/              NodeInspector — tabs, status pill, slider, fields
+│  ├─ layout/                 TopBar, LeftRail, RightPanel
+│  └─ ui/                     shadcn-style primitives (badge, button, input,
+│                              skeleton, slider, tabs, textarea)
+├─ hooks/                    useApps, useGraph — TanStack Query data hooks
+├─ lib/                      shared utilities
+├─ mocks/                    MSW handlers and browser worker setup
+├─ store/                    appStore — Zustand UI state
+└─ types/                    shared TypeScript types
+```
+
+Layout, canvas, inspector, and data-fetching concerns each live in their own folder, with no cross-cutting components — `hooks/` is the only place that talks to the mock API, and `store/` is the only place that holds cross-component UI state.
+
+## Mock API
+
+MSW intercepts two endpoints, both returning JSON with a simulated delay:
+
+```ts
+GET /api/apps
+// → [{ id: "app-1", name: "supertokens-golang" }, ...]
+
+GET /api/apps/:appId/graph
+// → {
+//     nodes: [{ id, type: "service" | "database", data: { label, status, resourceValue, cost, provider, description } }, ...],
+//     edges: [{ id, source, target }, ...]
+//   }
+```
+
+Handlers live in `src/mocks/handlers.ts`; the worker is registered in `src/mocks/browser.ts`. No real network calls are made — switching apps in the left panel triggers a new `GET /api/apps/:appId/graph` request through TanStack Query, which handles caching, loading, and error states.
+
 ## Getting Started
 
 The app lives inside the `client-side/` subfolder of this repository.
@@ -72,12 +129,12 @@ npm install
 ### Available scripts
 
 ```bash
-npm run dev         # start the local dev server
-npm run build        # type-check and build for production
+npm run dev        # start the local dev server
+npm run build       # type-check and build for production
 npm run preview      # preview the production build locally
 npm run lint         # run ESLint
 npm run typecheck    # run the TypeScript compiler with no emit
-npm run format        # format source files with Prettier
+npm run format       # format source files with Prettier
 ```
 
 Once running, open the printed local URL (typically `http://localhost:5173`) in your browser.
