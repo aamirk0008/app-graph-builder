@@ -12,7 +12,6 @@ import {
   type Node,
   type Edge,
 } from '@xyflow/react'
-// @ts-expect-error CSS module has no type declarations
 import '@xyflow/react/dist/style.css'
 import { ServiceNode } from './ServiceNode'
 import { useAppStore } from '@/store/appStore'
